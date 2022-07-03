@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, GestureResponderEvent} from 'react-native';
+import { CustomButton } from '../../../components/CustomButton';
+import { CustomText } from '../../../components/CustomText';
 import { IStockItem } from '../../../models';
+import { cards } from '../../../styles';
 
 interface IProps {
     item: IStockItem
@@ -14,9 +17,16 @@ export const StockItem : React.FC<IProps> = ({ item }) => {
 
     const [state, setState] = useState<IState>({ expanded: false });
 
-    return (
-        <View>
+    const toggleExpanded = (e: GestureResponderEvent) => setState({ ...state, expanded: !state.expanded });
 
+    return (
+        <View style={cards.stockItem}>
+            <CustomText
+                value={item.name}
+            />
+            <CustomButton
+                onPress={toggleExpanded}
+            />
         </View>
     );
 }

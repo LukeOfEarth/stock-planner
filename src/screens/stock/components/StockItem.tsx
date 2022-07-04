@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, GestureResponderEvent} from 'react-native';
-import { CustomButton } from '../../../components/CustomButton';
-import { CustomText } from '../../../components/CustomText';
+import { CustomButton, CustomText } from '../../../components';
 import { IStockItem } from '../../../models';
 import { cards } from '../../../styles';
 

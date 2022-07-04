@@ -5,9 +5,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import { IStockItem } from '../../models';
 import { useFileSystem } from '../../hooks/useFileSystem';
 import { StockItem, StockSearch } from './components';
-import { CustomText } from '../../components/CustomText';
+import { CustomText } from '../../components';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IStackScreenProps } from '../../navigation/Stack';
+import { AddButton } from './components/AddButton';
 
-export const StockScreen : React.FC<null> = () => {
+export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route }) => {
+    const insets = useSafeAreaInsets();
     const { getAllStockItems } = useFileSystem();
     
     const [stock, setStock] = useState<Array<IStockItem>>([]);
@@ -27,7 +31,7 @@ export const StockScreen : React.FC<null> = () => {
 
     return (
         <View
-            style={{ ...screens.root, ...screens.stock }}
+            style={[screens.root, { paddingTop: insets.top + 24 }]}
         >
             <ScrollView>
                 <StockSearch 
@@ -39,7 +43,7 @@ export const StockScreen : React.FC<null> = () => {
                     ||
                     <View
                         style={{
-                            paddingVertical: 8
+                            paddingVertical: 24
                         }}
                     >
                         <CustomText
@@ -49,6 +53,7 @@ export const StockScreen : React.FC<null> = () => {
                     </View>
                 }
             </ScrollView>
+            <AddButton navigation={navigation} />
         </View>
     );
 }

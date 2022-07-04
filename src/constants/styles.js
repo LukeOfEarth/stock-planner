@@ -26,3 +26,17 @@ export const AlignItems = {
     Stretch: 'stretch', 
     Baseline: 'baseline'
 }
+
+export const JustifyContent = {
+    Start: 'flex-start', 
+    End: 'flex-end', 
+    Center: 'center', 
+    SpaceBetween: 'space-between', 
+    SpaceAround: 'space-around', 
+    SpaceEvebnly: 'space-evenly'
+}
+
+export const Display = {
+    None: 'none', 
+    Flex: 'flex'
+}

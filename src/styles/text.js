@@ -8,6 +8,12 @@ export const text = StyleSheet.create({
         display: Display.Flex,
         width: '100%'
     },
+    secondary: {
+        color: Color.Black,
+        textAlign: TextAlign.Left,
+        display: Display.Flex,
+        width: '100%'
+    },
     button: {
         color: Color.White,
         textAlign: TextAlign.Center,

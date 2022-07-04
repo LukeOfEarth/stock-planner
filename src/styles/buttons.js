@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { AlignItems, Overflow, JustifyContent } from '../constants';
+import { AlignItems, Overflow, JustifyContent, Color } from '../constants';
 
 export const buttons = StyleSheet.create({
     root: {
@@ -12,6 +12,7 @@ export const buttons = StyleSheet.create({
         justifyContent: JustifyContent.Center
     },
     primary: {
-
+        backgroundColor: Color.PGreen,
+        borderRadius: 20,
     }
 });

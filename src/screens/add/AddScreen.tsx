@@ -1,11 +1,11 @@
 import React from 'react';
 import { TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CustomButton, CustomText } from '../../components';
-import { AlignItems, Color, JustifyContent } from '../../constants';
+import { CustomButton, CustomText, Pip } from '../../components';
+import { PipColor } from '../../components/Pip';
+import { Color } from '../../constants';
 import { IStackScreenProps } from '../../navigation/Stack';
 import { screens, text, buttons, search } from '../../styles';
-import { AddStockForm } from './components';
 
 export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) => {
 
@@ -13,7 +13,7 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
     
     return (
         <View style={[screens.root, { paddingTop: insets.top + 24 }]}>
-            <View>
+            <View style={{ paddingVertical: 8 }}>
                 <CustomText 
                     value='Add a new item'
                     textStyle={text.primary}
@@ -29,20 +29,50 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                 />
             </View>
 
-            <View>
+            <View
+                style={{
+                    paddingVertical: 24,
+                    flexDirection: 'row'
+                }}
+            >
+                <Pip color={PipColor.Green} />
                 <CustomText 
-                    value='Add a new item'
-                    textStyle={[text.primary, {paddingVertical: 8}]}
+                    value={`We're good`}
+                    textStyle={[text.secondary, {paddingVertical: 8}]}
                 />
             </View>
 
-            <View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    paddingVertical: 24,
+                }}
+            >
+                <Pip color={PipColor.Orange} />
                 <CustomText 
-                    value='Add a new item'
-                    textStyle={[text.primary, {paddingVertical: 8}]}
+                    value={`We're running low`}
+                    textStyle={[text.secondary, {paddingVertical: 8}]}
                 />
             </View>
-            {/* <AddStockForm /> */}
+            
+            <View
+                style={{
+                    position: 'absolute', 
+                    bottom: insets.bottom + 24, 
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignSelf: 'center'
+                    // paddingHorizontal: 24
+                }}
+            >
+                <CustomButton 
+                    label={'Add'}
+                    buttonStyle={buttons.primary}
+                    labelStyle={[text.primary, { color: Color.White }]}
+                    onPress={() => navigation.navigate('Stock')}
+                />
+            </View>
         </View>
     );
 }

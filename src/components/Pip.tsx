@@ -1,15 +1,15 @@
 import React from 'react';
 import { View } from 'react-native';
-import { AlignItems, Color, JustifyContent } from '../constants';
+import { Color } from '../constants';
 
-export enum PipColor {
+export enum EPipColor {
     Green,
     Orange,
     Red
 }
 
 interface IProps {
-    color: PipColor
+    color: EPipColor
 }
 
 export const Pip : React.FC<IProps> = ({ color }) => (
@@ -25,7 +25,7 @@ export const Pip : React.FC<IProps> = ({ color }) => (
                 width: 12,
                 height: 12,
                 borderRadius: 6,
-                backgroundColor: color === PipColor.Green ? Color.PGreen : color === PipColor.Orange ? Color.POrange : Color.PRed
+                backgroundColor: color === EPipColor.Green ? Color.PGreen : color === EPipColor.Orange ? Color.POrange : Color.PRed
             }}
         />
     </View>

@@ -1,18 +1,97 @@
-import React from 'react';
-import { TextInput, View } from 'react-native';
+import React, { useState } from 'react';
+import { TextInput, View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CustomButton, CustomText, Pip } from '../../components';
-import { PipColor } from '../../components/Pip';
+import { CustomButton, CustomText, Pip, BackButton, IconButton, EButtonIcon } from '../../components';
+import { EPipColor } from '../../components/Pip';
 import { Color } from '../../constants';
 import { IStackScreenProps } from '../../navigation/Stack';
 import { screens, text, buttons, search } from '../../styles';
 
+interface IErrors {
+    name: string;
+    greenValue: string;
+    orangeValue: string;
+}
+interface IState {
+    name: string;
+    greenValue: number;
+    orangeValue: number;
+    errors: IErrors;
+}
+
+const styles = StyleSheet.create({
+    countContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    sectionHeaderContainer: {
+        flexDirection: 'row',
+    },
+    sectionContainer: {
+        paddingVertical: 24
+    },
+});
+
 export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) => {
 
     const insets = useSafeAreaInsets();
+
+    const [state, setState] = useState<IState>({ name: '', greenValue: 2, orangeValue: 1, errors: { name: '', greenValue: '', orangeValue: '' } });
+
+    const decrementValue = (key: string) => {
+        if(key != 'greenValue' && key != 'orangeValue') {
+            return;
+        }
+
+        if(state[key as keyof IState] > 0) {
+            setState({ ...state, [key]: state[key as keyof IState] as number - 1 });
+        }
+    }
+
+    const incrementValue = (key: string) => {
+        if(key != 'greenValue' && key != 'orangeValue') {
+            return;
+        }
+
+        setState({ ...state, [key]: state[key as keyof IState] as number + 1 });
+    }
+
+    const validate = () => {
+        let errorState = false;
+        let errors: IErrors = { name: '', greenValue: '', orangeValue: '' };
+
+        if(state.name === '') {
+            errors.name = 'Please enter a valid name for the item';
+            errorState = true;
+        }
+
+        if(state.greenValue === 0) {
+            errors.greenValue = 'Value must be more than 0';
+            errorState = true;
+        }
+
+        if(state.orangeValue >= state.greenValue) {
+            errors.greenValue = `Value must be less than the assigned "We're good" value`;
+            errorState = true;
+        }
+
+        if(errorState) {
+            setState({ ...state, errors })
+        }
+    }
+
+    const addItem = () => {
+        validate();
+
+
+    }
     
     return (
         <View style={[screens.root, { paddingTop: insets.top + 24 }]}>
+            <BackButton onPress={() => navigation.navigate('Stock')} />
             <View style={{ paddingVertical: 8 }}>
                 <CustomText 
                     value='Add a new item'
@@ -26,33 +105,81 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                 <TextInput 
                     style={search.text}
                     placeholder={'Item Name'}
+                    value={state.name}
+                    onChangeText={(text: string) => setState({ ...state, name: text })}
                 />
             </View>
 
-            <View
-                style={{
-                    paddingVertical: 24,
-                    flexDirection: 'row'
-                }}
-            >
-                <Pip color={PipColor.Green} />
+            {
+                !!state.errors.name &&
                 <CustomText 
-                    value={`We're good`}
-                    textStyle={[text.secondary, {paddingVertical: 8}]}
+                    value={state.errors.name}
+                    textStyle={[text.secondary, { color: Color.PRed }]}
                 />
+            }
+
+            <View style={styles.sectionContainer} >
+                <View style={styles.sectionHeaderContainer} >
+                    <Pip color={EPipColor.Green} />
+                    <CustomText 
+                        value={`We're good`}
+                        textStyle={[text.secondary, {paddingVertical: 8}]}
+                    />
+                </View>
+                <View
+                    style={styles.countContainer}
+                >
+                    <IconButton 
+                        icon={EButtonIcon.Minus}
+                        onPress={() => decrementValue('greenValue')}
+                        size={40}
+                    />
+                    <CustomText 
+                        textStyle={{
+                            marginHorizontal: 24,
+                            fontSize: 32,
+                            color: Color.PGreen
+                        }}
+                        value={state.greenValue.toString()}
+                    />
+                    <IconButton 
+                        icon={EButtonIcon.Plus}
+                        onPress={() => incrementValue('greenValue')}
+                        size={40}
+                    />
+                </View>
             </View>
 
-            <View
-                style={{
-                    flexDirection: 'row',
-                    paddingVertical: 24,
-                }}
-            >
-                <Pip color={PipColor.Orange} />
-                <CustomText 
-                    value={`We're running low`}
-                    textStyle={[text.secondary, {paddingVertical: 8}]}
-                />
+            <View style={styles.sectionContainer} >
+                <View style={styles.sectionHeaderContainer} >
+                    <Pip color={EPipColor.Orange} />
+                    <CustomText 
+                        value={`We need to get more`}
+                        textStyle={[text.secondary, {paddingVertical: 8}]}
+                    />
+                </View>
+                <View
+                    style={styles.countContainer}
+                >
+                    <IconButton 
+                        icon={EButtonIcon.Minus}
+                        onPress={() => decrementValue('orangeValue')}
+                        size={40}
+                    />
+                    <CustomText 
+                        textStyle={{
+                            marginHorizontal: 24,
+                            fontSize: 32,
+                            color: Color.POrange
+                        }}
+                        value={state.orangeValue.toString()}
+                    />
+                    <IconButton 
+                        icon={EButtonIcon.Plus}
+                        onPress={() => incrementValue('orangeValue')}
+                        size={40}
+                    />
+                </View>
             </View>
             
             <View
@@ -63,14 +190,13 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                     alignItems: 'center',
                     justifyContent: 'center',
                     alignSelf: 'center'
-                    // paddingHorizontal: 24
                 }}
             >
                 <CustomButton 
                     label={'Add'}
                     buttonStyle={buttons.primary}
                     labelStyle={[text.primary, { color: Color.White }]}
-                    onPress={() => navigation.navigate('Stock')}
+                    onPress={addItem}
                 />
             </View>
         </View>

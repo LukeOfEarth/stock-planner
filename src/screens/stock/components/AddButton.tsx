@@ -18,7 +18,7 @@ export const AddButton : React.FC<IProps> = ({ navigation }) => {
                 width: 100,
                 height: 100,
                 borderRadius: 50,
-                backgroundColor: pressed ? Color.White : Color.PGreen
+                backgroundColor: pressed ? Color.TransparentGrey : Color.PGreen
             }]}
             onPress={() => navigation.navigate('Add')}
         >

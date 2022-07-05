@@ -16,7 +16,6 @@ interface IState {
     name: string;
     greenValue: number;
     orangeValue: number;
-    errors: IErrors;
 }
 
 const styles = StyleSheet.create({
@@ -39,7 +38,8 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
 
     const insets = useSafeAreaInsets();
 
-    const [state, setState] = useState<IState>({ name: '', greenValue: 2, orangeValue: 1, errors: { name: '', greenValue: '', orangeValue: '' } });
+    const [state, setState] = useState<IState>({ name: '', greenValue: 2, orangeValue: 1 });
+    const [errors, setErrors] = useState<IErrors>({ name: '', greenValue: '', orangeValue: '' });
 
     const decrementValue = (key: string) => {
         if(key != 'greenValue' && key != 'orangeValue') {
@@ -49,6 +49,10 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
         if(state[key as keyof IState] > 0) {
             setState({ ...state, [key]: state[key as keyof IState] as number - 1 });
         }
+
+        if(!!errors[key as keyof IErrors]) {
+            validate();
+        }
     }
 
     const incrementValue = (key: string) => {
@@ -57,36 +61,42 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
         }
 
         setState({ ...state, [key]: state[key as keyof IState] as number + 1 });
+
+        if(!!errors[key as keyof IErrors]) {
+            validate();
+        }
     }
 
-    const validate = () => {
-        let errorState = false;
+    const validate = (name? : string) => {
         let errors: IErrors = { name: '', greenValue: '', orangeValue: '' };
+        let hasErrors = false;
 
-        if(state.name === '') {
+        if((name ?? state.name) === '') {
             errors.name = 'Please enter a valid name for the item';
-            errorState = true;
+            hasErrors = true;
         }
 
         if(state.greenValue === 0) {
             errors.greenValue = 'Value must be more than 0';
-            errorState = true;
+            hasErrors = true;
         }
 
         if(state.orangeValue >= state.greenValue) {
-            errors.greenValue = `Value must be less than the assigned "We're good" value`;
-            errorState = true;
+            errors.orangeValue = `Value must be less than the assigned "We're good" value`;
+            hasErrors = true;
         }
 
-        if(errorState) {
-            setState({ ...state, errors })
-        }
+        setErrors(errors);
+
+        return hasErrors;
     }
 
-    const addItem = () => {
-        validate();
+    const addItem = async () => {
+        if(validate()) {
+            return;
+        }
 
-
+        navigation.navigate('Stock');
     }
     
     return (
@@ -106,15 +116,20 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                     style={search.text}
                     placeholder={'Item Name'}
                     value={state.name}
-                    onChangeText={(text: string) => setState({ ...state, name: text })}
+                    onChangeText={(text: string) => {
+                        setState({ ...state, name: text });
+                        if(!!errors.name) {
+                            validate(text);
+                        }
+                    }}
                 />
             </View>
 
             {
-                !!state.errors.name &&
+                !!errors.name &&
                 <CustomText 
-                    value={state.errors.name}
-                    textStyle={[text.secondary, { color: Color.PRed }]}
+                    value={errors.name}
+                    textStyle={[text.secondary, { color: Color.PRed, marginTop: 2 }]}
                 />
             }
 
@@ -126,6 +141,15 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                         textStyle={[text.secondary, {paddingVertical: 8}]}
                     />
                 </View>
+
+                {
+                    !!errors.greenValue &&
+                    <CustomText 
+                        value={errors.greenValue}
+                        textStyle={[text.secondary, { color: Color.PRed, marginTop: 2 }]}
+                    />
+                }
+
                 <View
                     style={styles.countContainer}
                 >
@@ -158,6 +182,15 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                         textStyle={[text.secondary, {paddingVertical: 8}]}
                     />
                 </View>
+
+                {
+                    !!errors.orangeValue &&
+                    <CustomText 
+                        value={errors.orangeValue}
+                        textStyle={[text.secondary, { color: Color.PRed, marginTop: 2 }]}
+                    />
+                }
+
                 <View
                     style={styles.countContainer}
                 >

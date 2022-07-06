@@ -10,7 +10,7 @@ export const StockSearch : React.FC<IProps> = ({ onChangeText }) => {
 
     return (
         <View
-            style={search.container}
+            style={[search.container, { marginBottom: 8 }]}
         >
             <TextInput 
                 style={search.text}

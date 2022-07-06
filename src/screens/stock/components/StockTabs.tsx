@@ -2,10 +2,13 @@ import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { CustomText } from '../../../components';
 import { Color } from '../../../constants';
+import { IStockItem } from '../../../models';
 
 interface IProps {
-    selectedIndex: number
-    selectIndex: Function
+    selectedIndex: number;
+    selectIndex: Function;
+    stock: Array<IStockItem>;
+    list: Array<IStockItem>;
 }
 
 const styles = StyleSheet.create({

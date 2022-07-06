@@ -11,6 +11,8 @@ import { IStackScreenProps } from '../../navigation/Stack';
 import { AddButton } from './components/AddButton';
 import { StockTabs } from './components/StockTabs';
 import { AddPopUp } from './components/AddPopUp';
+import { ContentTabs } from './components/ListTabs';
+import { StatusBar } from 'expo-status-bar';
 
 export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route }) => {
     const insets = useSafeAreaInsets();
@@ -29,6 +31,9 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
     const selectedItems = selectedTabIndex === 0 ? stockedItems : listedItems;
 
     const filteredItems = filter.trim() === '' ? selectedItems : selectedItems.filter(i => i.name.includes(filter)); 
+
+    const filteredStock = filter.trim() === '' ? stockedItems : stockedItems.filter(i => i.name.includes(filter));
+    const filteredList = filter.trim() === '' ? listedItems : listedItems.filter(i => i.name.includes(filter));
 
     const getStock = async () => {
         const stock = await getAllStockItems();
@@ -87,38 +92,16 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
         <View
             style={[screens.root, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 100 }]}
         >
-            <ScrollView>
+            <StatusBar style='auto' />
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                }}
+            >
                 <StockSearch 
                     onChangeText={onSearchUpdated}
                 />
-                <StockTabs selectedIndex={selectedTabIndex} selectIndex={setSelectedTabIndex} />
-                {
-                    !!stock.length ?
-                        !!filteredItems.length ?
-                            filteredItems.map((el, index) => <StockItem item={el} updateItemValue={updateItemValue} key={index}/>)
-                        :
-                            <View
-                                style={{
-                                    paddingVertical: 24
-                                }}
-                            >
-                                <CustomText 
-                                    textStyle={text.primary}
-                                    value={getMessage()}
-                                />
-                            </View>
-                    :
-                        <View
-                            style={{
-                                paddingVertical: 24
-                            }}
-                        >
-                            <CustomText
-                                textStyle={text.primary}
-                                value={'You have no items in your list!\nUse the add button below to add some.'} 
-                            />
-                        </View>
-                }
+                <ContentTabs filter={filter} stock={filteredStock} list={filteredList} updateItemValue={updateItemValue} />
             </ScrollView>
             <AddPopUp getStock={getStock} />
         </View>

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { View, GestureResponderEvent, StyleSheet, Dimensions} from 'react-native';
-import { CustomButton, CustomText, EButtonIcon, EPipColor, IconButton, Pip } from '../../../components';
+import React from 'react';
+import { View, StyleSheet, LayoutChangeEvent} from 'react-native';
+import { CustomText, EButtonIcon, EPipColor, IconButton, Pip } from '../../../components';
 import { IStockItem } from '../../../models';
 
 interface IProps {
-    item: IStockItem,
-    updateItemValue: Function
+    index: number;
+    item: IStockItem;
+    updateItemValue: Function;
+    setItemHeight: Function;
 }
 
 const styles = StyleSheet.create({
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export const StockItem : React.FC<IProps> = ({ item, updateItemValue }) => {
+export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index, setItemHeight }) => {
     const getPipColor = () => {
         if(item.value === 0) {
             return EPipColor.Red;
@@ -44,7 +46,7 @@ export const StockItem : React.FC<IProps> = ({ item, updateItemValue }) => {
     }
     
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { marginTop: index === 0 ? 16 : 0 } ]} onLayout={(e: LayoutChangeEvent) => setItemHeight(e.nativeEvent.layout.height)}>
             <View style={styles.textContainer}>
                 <Pip color={getPipColor()}/>
                 <CustomText

@@ -16,21 +16,9 @@ interface IProps {
 const styles = StyleSheet.create({
     indicator: {
         backgroundColor: Color.White,
-        elevation: 0,
-        shadowColor: Color.Transparent
-
     },
     indicatorContainer: {
         backgroundColor: Color.White,
-        elevation: 0,
-        shadowColor: Color.Transparent
-
-    },
-    label: {
-        elevation: 0,
-        color: Color.Black,
-        shadowColor: Color.Transparent
-
     }
 });
 
@@ -39,8 +27,7 @@ export const Tabs : React.FC<IProps> = ({ props }) => (
         {...props}
         indicatorStyle={[styles.indicator, { backgroundColor: props.navigationState.index === 0 ? Color.PGreen : Color.POrange }]}
         indicatorContainerStyle={styles.indicatorContainer}
-        labelStyle={styles.label}
-        renderLabel={({ route, focused, color }) => <CustomText value={route.title} />}
+        renderLabel={({ route, focused, color }) => <CustomText textStyle={{ fontSize: 16 }} value={route.title} />}
         tabStyle={{
             elevation: 0,
             shadowColor: Color.Transparent

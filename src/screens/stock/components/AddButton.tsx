@@ -14,7 +14,7 @@ export const AddButton : React.FC<IProps> = ({ onPress }) => {
         <Pressable
             style={({ pressed }) => [{
                 position: 'absolute',
-                bottom: insets.bottom + 24,
+                bottom: (insets.bottom + 8) > 16 ? (insets.bottom + 8) : 16,
                 right: 24,
                 width: 60,
                 height: 60,
@@ -26,7 +26,7 @@ export const AddButton : React.FC<IProps> = ({ onPress }) => {
             onPress={onPress}
         >
             <Image 
-                source={require('../../../../assets/plus.png')}
+                source={require('../../../../assets/plus_white.png')}
                 style={{
                     width: 50,
                     height: 50,

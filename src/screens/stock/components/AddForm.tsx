@@ -24,7 +24,6 @@ interface IProps {
 const styles = StyleSheet.create({
     countContainer: {
         flexDirection: 'row',
-        width: '100%',
         height: 40,
         alignItems: 'center',
         justifyContent: 'center'
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
     sectionHeaderContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
     },
     sectionContainer: {
         paddingVertical: 24
@@ -153,7 +152,7 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
              <View style={{ paddingVertical: 8 }}>
                 <CustomText 
                     value='Add a new item'
-                    textStyle={text.primary}
+                    textStyle={[text.primary, { fontSize: 16 }]}
                 />
             </View>
 
@@ -187,11 +186,38 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
 
             <View style={styles.sectionContainer} >
                 <View style={styles.sectionHeaderContainer} >
-                    <Pip color={EPipColor.Green} />
-                    <CustomText 
-                        value={`We're good`}
-                        textStyle={[text.secondary, { paddingVertical: 8, width: 'auto' }]}
-                    />
+                    <View
+                        style={{ flexDirection: 'row' }}
+                    >
+                        <Pip color={EPipColor.Green} />
+                        <CustomText 
+                            value={`We're good`}
+                            textStyle={[text.secondary, { paddingVertical: 8, width: 'auto', fontSize: 16 }]}
+                        />
+                    </View>
+
+                    <View
+                        style={styles.countContainer}
+                    >
+                        <IconButton 
+                            icon={EButtonIcon.Minus}
+                            onPress={() => decrementValue('greenValue')}
+                            size={30}
+                        />
+                        <CustomText 
+                            textStyle={{
+                                marginHorizontal: 24,
+                                fontSize: 24,
+                                color: Color.Black
+                            }}
+                            value={state.greenValue.toString()}
+                        />
+                        <IconButton 
+                            icon={EButtonIcon.Plus}
+                            onPress={() => incrementValue('greenValue')}
+                            size={30}
+                        />
+                    </View>
                 </View>
 
                 {
@@ -201,29 +227,6 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
                         textStyle={[text.secondary, { color: Color.PRed, marginTop: 2 }]}
                     />
                 }
-
-                <View
-                    style={styles.countContainer}
-                >
-                    <IconButton 
-                        icon={EButtonIcon.Minus}
-                        onPress={() => decrementValue('greenValue')}
-                        size={40}
-                    />
-                    <CustomText 
-                        textStyle={{
-                            marginHorizontal: 24,
-                            fontSize: 32,
-                            color: Color.Black
-                        }}
-                        value={state.greenValue.toString()}
-                    />
-                    <IconButton 
-                        icon={EButtonIcon.Plus}
-                        onPress={() => incrementValue('greenValue')}
-                        size={40}
-                    />
-                </View>
             </View>
             
             <View
@@ -237,7 +240,7 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
                 <CustomButton 
                     label={'Add'}
                     buttonStyle={buttons.primary}
-                    labelStyle={[text.primary, { color: Color.Black }]}
+                    labelStyle={[text.primary, { color: Color.White, fontSize: 16, fontWeight: '700' }]}
                     onPress={addItem}
                 />
             </View>

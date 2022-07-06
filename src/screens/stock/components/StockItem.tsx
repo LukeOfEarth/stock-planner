@@ -7,7 +7,6 @@ interface IProps {
     index: number;
     item: IStockItem;
     updateItemValue: Function;
-    setItemHeight: Function;
 }
 
 const styles = StyleSheet.create({
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index, setItemHeight }) => {
+export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index }) => {
     const getPipColor = () => {
         if(item.value === 0) {
             return EPipColor.Red;
@@ -46,7 +45,7 @@ export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index, set
     }
     
     return (
-        <View style={[styles.container, { marginTop: index === 0 ? 16 : 0 } ]} onLayout={(e: LayoutChangeEvent) => setItemHeight(e.nativeEvent.layout.height)}>
+        <View style={[styles.container, { marginTop: index === 0 ? 16 : 8 } ]}>
             <View style={styles.textContainer}>
                 <Pip color={getPipColor()}/>
                 <CustomText

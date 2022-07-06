@@ -30,12 +30,12 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
 
     const filteredItems = filter.trim() === '' ? selectedItems : selectedItems.filter(i => i.name.includes(filter)); 
 
-    useFocusEffect(useCallback(() => {
-        const getStock = async () => {
-            const stock = await getAllStockItems();
-            setStock(stock);    
-        }
+    const getStock = async () => {
+        const stock = await getAllStockItems();
+        setStock(stock);    
+    }
 
+    useFocusEffect(useCallback(() => {
         getStock();
     }, []));
 
@@ -120,7 +120,7 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
                         </View>
                 }
             </ScrollView>
-            <AddPopUp />
+            <AddPopUp getStock={getStock} />
         </View>
     );
 }

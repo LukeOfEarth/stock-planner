@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Image, Keyboard, NativeSyntheticEvent, Pressable, StyleSheet, TextInput, TextInputEndEditingEventData, View } from 'react-native';
 import { CustomText, Pip, EPipColor, IconButton, EButtonIcon, CustomButton } from '../../../components';
 import { Color } from '../../../constants';
 import { useFileSystem } from '../../../hooks/useFileSystem';
@@ -18,6 +18,7 @@ interface IState {
 
 interface IProps {
     triggerClose: Function;
+    getStock: Function;
 }
 
 const styles = StyleSheet.create({
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
+export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
     const { storeStockItem } = useFileSystem();
 
     const [state, setState] = useState<IState>({ name: '', greenValue: 1 });
@@ -69,17 +70,17 @@ export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
 
     const validateName = (name: string) => {
         if((name) === '') {
-            errors.name = 'Please enter a valid name for the item';
+            setErrors({ ...errors, name: 'Please enter a valid name for the item' });
         } else {
-            errors.name = '';
+            setErrors({ ...errors, name: '' });
         }
     }
 
     const validateValue = (value: number) => {
         if(value < 1) {
-            errors.name = 'Value must be more than 0';
+            setErrors({ ...errors, greenValue: 'Value must be more than 0' });
         } else {
-            errors.name = '';
+            setErrors({ ...errors, greenValue: '' });
         }
     }
 
@@ -87,7 +88,19 @@ export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
         let errors: IErrors = { name: '', greenValue: '' };
         let hasErrors = false;
 
-        hasErrors = true;
+        if((state.name) === '') {
+            errors.name = 'Please enter a valid name for the item';
+            hasErrors = true;
+        } else {
+            errors.name = '';
+        }
+
+        if(state.greenValue < 1) {
+            errors.greenValue = 'Value must be more than 0';
+            hasErrors = true;
+        } else {
+            errors.greenValue = '';
+        }
 
         setErrors(errors);
 
@@ -106,7 +119,11 @@ export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
         }
 
         storeStockItem(item)
-        .then(() => triggerClose())
+        .then(async () => {
+            setErrors({ name:'', greenValue:'' });
+            triggerClose();
+            await getStock();
+        })
         .catch((e) => console.log(`ERROR:`, e));
     }
 
@@ -120,15 +137,17 @@ export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
             <View style={{
                 alignItems: 'flex-end'
             }}>
-                <Pressable onPress={() => triggerClose()}>
-                    <View
+                <Pressable onPress={() => {
+                    triggerClose();
+                    setErrors({ name:'', greenValue:'' });
+                }}>
+                    <Image
                         style={{
-                            width: 40,
-                            height: 40,
-                            backgroundColor: 'green'
+                            width: 30,
+                            height: 30,
                         }}
-                    >
-                    </View>
+                        source={require('../../../../assets/cross.png')}
+                    />
                 </Pressable>
             </View>
              <View style={{ paddingVertical: 8 }}>
@@ -145,11 +164,15 @@ export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
                     style={search.text}
                     placeholder={'Item Name'}
                     value={state.name}
+                    onSubmitEditing={Keyboard.dismiss}
                     onChangeText={(text: string) => {
                         setState({ ...state, name: text });
                         if(!!errors.name) {
                             validateName(text);
                         }
+                    }}
+                    onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => {
+                        validateName(e.nativeEvent.text);
                     }}
                 />
             </View>

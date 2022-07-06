@@ -69,7 +69,6 @@ export const useFileSystem = () => {
     }
 
     const storeStockItem = async (data: IStockItem) => {
-        console.log(`NEW LOG:`, data)
         const key: string = data.name;
         const item: string = JSON.stringify(data);
         await storeStringAsTextFile(key, item);

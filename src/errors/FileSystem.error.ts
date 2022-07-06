@@ -1,4 +1,4 @@
-class FileSystemError extends Error {
+export class FileSystemError extends Error {
     constructor(msg: string) {
         super(msg);
         Object.setPrototypeOf(this, FileSystemError.prototype);

@@ -10,7 +10,7 @@ export enum EButtonIcon {
 interface IProps {
     icon: EButtonIcon,
     onPress: (event: GestureResponderEvent) => void,
-    size?: number
+    size?: number,
 }
 
 export const IconButton : React.FC<IProps> = ({ icon, onPress, size }) => {

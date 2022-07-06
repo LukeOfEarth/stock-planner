@@ -6,13 +6,13 @@ export const text = StyleSheet.create({
         color: Color.Black,
         textAlign: TextAlign.Center,
         display: Display.Flex,
-        width: '100%'
+        width: '100%',
     },
     secondary: {
         color: Color.Black,
         textAlign: TextAlign.Left,
         display: Display.Flex,
-        width: '100%'
+        width: '100%',
     },
     button: {
         color: Color.White,
@@ -24,6 +24,6 @@ export const text = StyleSheet.create({
         color: Color.Black,
         textAlign: TextAlign.Left,
         display: Display.Flex,
-        width: '100%'
+        width: '100%',
     }
 });

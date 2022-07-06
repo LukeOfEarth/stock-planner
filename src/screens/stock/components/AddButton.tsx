@@ -1,28 +1,37 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Pressable } from 'react-native';
+import { GestureResponderEvent, Image, Pressable } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Color } from '../../../constants';
 
 interface IProps {
-    navigation: NativeStackNavigationProp<any>
+    onPress: (event: GestureResponderEvent) => void
 }
 
-export const AddButton : React.FC<IProps> = ({ navigation }) => {
+export const AddButton : React.FC<IProps> = ({ onPress }) => {
+    const insets = useSafeAreaInsets();
 
     return (
         <Pressable
             style={({ pressed }) => [{
                 position: 'absolute',
-                bottom: -10,
-                right: -10,
-                width: 100,
-                height: 100,
-                borderRadius: 50,
-                backgroundColor: pressed ? Color.TransparentGrey : Color.PGreen
+                bottom: insets.bottom + 24,
+                right: 24,
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: pressed ? Color.TransparentGrey : Color.PGreen,
+                alignItems: 'center',
+                justifyContent: 'center'
             }]}
-            onPress={() => navigation.navigate('Add')}
+            onPress={onPress}
         >
-
+            <Image 
+                source={require('../../../../assets/plus.png')}
+                style={{
+                    width: 50,
+                    height: 50,
+                }}
+            />
         </Pressable>
     );
 }

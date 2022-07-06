@@ -1,5 +1,6 @@
 import * as FS from 'expo-file-system';
 import { IStockItem } from '../models';
+import { FileSystemError } from '../errors';
 
 const ID_KEY: string = 'ids';
 
@@ -68,15 +69,16 @@ export const useFileSystem = () => {
     }
 
     const storeStockItem = async (data: IStockItem) => {
-        const key: string = data.id;
+        console.log(`NEW LOG:`, data)
+        const key: string = data.name;
         const item: string = JSON.stringify(data);
         await storeStringAsTextFile(key, item);
-        await syncIds(data.id);
+        await syncIds(data.name);
     }
 
     const deleteStockItem = async (data: IStockItem) => {
-        await deleteFileIfExists(data.id);
-        await syncIds(data.id);
+        await deleteFileIfExists(data.name);
+        await syncIds(data.name);
     }
 
     return {

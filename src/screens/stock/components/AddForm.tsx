@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import { TextInput, View, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CustomButton, CustomText, Pip, BackButton, IconButton, EButtonIcon } from '../../components';
-import { EPipColor } from '../../components/Pip';
-import { Color } from '../../constants';
-import { IStackScreenProps } from '../../navigation/Stack';
-import { screens, text, buttons, search } from '../../styles';
-import { useFileSystem } from '../../hooks/useFileSystem';
-import { generateId } from '../../common';
-import { IStockItem } from '../../models';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { CustomText, Pip, EPipColor, IconButton, EButtonIcon, CustomButton } from '../../../components';
+import { Color } from '../../../constants';
+import { useFileSystem } from '../../../hooks/useFileSystem';
+import { IStockItem } from '../../../models';
+import { text, search, buttons } from '../../../styles';
 
 interface IErrors {
     name: string;
     greenValue: string;
-    orangeValue: string;
 }
+
 interface IState {
     name: string;
     greenValue: number;
-    orangeValue: number;
+}
+
+interface IProps {
+    triggerClose: Function;
 }
 
 const styles = StyleSheet.create({
@@ -31,21 +30,22 @@ const styles = StyleSheet.create({
     },
     sectionHeaderContainer: {
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     sectionContainer: {
         paddingVertical: 24
     },
 });
 
-export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) => {
-    const insets = useSafeAreaInsets();
+export const AddForm : React.FC<IProps> = ({ triggerClose }) => {
     const { storeStockItem } = useFileSystem();
 
-    const [state, setState] = useState<IState>({ name: '', greenValue: 2, orangeValue: 1 });
-    const [errors, setErrors] = useState<IErrors>({ name: '', greenValue: '', orangeValue: '' });
+    const [state, setState] = useState<IState>({ name: '', greenValue: 1 });
+    const [errors, setErrors] = useState<IErrors>({ name: '', greenValue: '' });
 
     const decrementValue = (key: string) => {
-        if(key != 'greenValue' && key != 'orangeValue') {
+        if(key != 'greenValue') {
             return;
         }
 
@@ -59,35 +59,35 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
     }
 
     const incrementValue = (key: string) => {
-        if(key != 'greenValue' && key != 'orangeValue') {
-            return;
-        }
+        const value = (state.greenValue + 1);
+        setState({ ...state, greenValue: value });
 
-        setState({ ...state, [key]: state[key as keyof IState] as number + 1 });
-
-        if(!!errors[key as keyof IErrors]) {
-            validate();
+        if(!!errors.greenValue) {
+            validateValue(value);
         }
     }
 
-    const validate = (name? : string) => {
-        let errors: IErrors = { name: '', greenValue: '', orangeValue: '' };
+    const validateName = (name: string) => {
+        if((name) === '') {
+            errors.name = 'Please enter a valid name for the item';
+        } else {
+            errors.name = '';
+        }
+    }
+
+    const validateValue = (value: number) => {
+        if(value < 1) {
+            errors.name = 'Value must be more than 0';
+        } else {
+            errors.name = '';
+        }
+    }
+
+    const validate = () => {
+        let errors: IErrors = { name: '', greenValue: '' };
         let hasErrors = false;
 
-        if((name ?? state.name) === '') {
-            errors.name = 'Please enter a valid name for the item';
-            hasErrors = true;
-        }
-
-        if(state.greenValue === 0) {
-            errors.greenValue = 'Value must be more than 0';
-            hasErrors = true;
-        }
-
-        if(state.orangeValue >= state.greenValue) {
-            errors.orangeValue = `Value must be less than the assigned "We're good" value`;
-            hasErrors = true;
-        }
+        hasErrors = true;
 
         setErrors(errors);
 
@@ -106,14 +106,32 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
         }
 
         storeStockItem(item)
-        .then(() => navigation.navigate('Stock'))
+        .then(() => triggerClose())
         .catch((e) => console.log(`ERROR:`, e));
     }
-    
+
     return (
-        <View style={[screens.root, { paddingTop: insets.top + 24 }]}>
-            <BackButton onPress={() => navigation.navigate('Stock')} />
-            <View style={{ paddingVertical: 8 }}>
+        <View style={{
+            width: '100%',
+            height: 'auto',
+            backgroundColor: Color.White,
+            paddingBottom: 24
+        }}>
+            <View style={{
+                alignItems: 'flex-end'
+            }}>
+                <Pressable onPress={() => triggerClose()}>
+                    <View
+                        style={{
+                            width: 40,
+                            height: 40,
+                            backgroundColor: 'green'
+                        }}
+                    >
+                    </View>
+                </Pressable>
+            </View>
+             <View style={{ paddingVertical: 8 }}>
                 <CustomText 
                     value='Add a new item'
                     textStyle={text.primary}
@@ -130,7 +148,7 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                     onChangeText={(text: string) => {
                         setState({ ...state, name: text });
                         if(!!errors.name) {
-                            validate(text);
+                            validateName(text);
                         }
                     }}
                 />
@@ -149,7 +167,7 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                     <Pip color={EPipColor.Green} />
                     <CustomText 
                         value={`We're good`}
-                        textStyle={[text.secondary, {paddingVertical: 8}]}
+                        textStyle={[text.secondary, { paddingVertical: 8, width: 'auto' }]}
                     />
                 </View>
 
@@ -173,7 +191,7 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
                         textStyle={{
                             marginHorizontal: 24,
                             fontSize: 32,
-                            color: Color.PGreen
+                            color: Color.Black
                         }}
                         value={state.greenValue.toString()}
                     />
@@ -187,8 +205,6 @@ export const AddScreen: React.FC<IStackScreenProps> = ({ navigation, route }) =>
             
             <View
                 style={{
-                    position: 'absolute', 
-                    bottom: insets.bottom + 24, 
                     width: '100%',
                     alignItems: 'center',
                     justifyContent: 'center',

@@ -11,5 +11,8 @@ export const Color = {
 
     PGreen: '#E2F0CB',
     POrange: '#FFDAC1',
-    PRed: '#FFB7B2'
+    PRed: '#FFB7B2',
+
+    DisabledGreyBG: '#e5e5e5',
+    DisabledGreyText: '#b4b4b4',
 }

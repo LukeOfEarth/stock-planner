@@ -1,11 +1,32 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Animated, LayoutChangeEvent, Dimensions, Keyboard, KeyboardEventListener, EmitterSubscription } from 'react-native';
-import { Color } from '../../../constants';
-import { AddButton } from './AddButton';
-import { AddForm } from './AddForm';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { StyleSheet, Animated, Keyboard, EmitterSubscription } from 'react-native';
+import { Color } from '../constants';
+import { IStockItem } from '../models';
+import { AddButton } from '../screens/stock/components/AddButton';
+import { AddForm } from '../screens/stock/components/AddForm';
+import { DeleteForm } from '../screens/stock/components/DeleteForm';
+
+export enum EPopUpType {
+    Delete,
+    Add
+}
 
 interface IProps {
-    getStock: Function
+    getStock: Function;
+    type: EPopUpType;
+    selectedItem?: IStockItem;
+    clearSelectedItem: Function;
+}
+
+export interface IPopUpProps {
+    triggerClose: Function;
+    getStock: Function;
+    item?: IStockItem;
+    clearSelectedItem?: Function
+}
+
+type IHandle = {
+    trigger: () => void
 }
 
 const ANIMATION_TIME = 500;
@@ -30,10 +51,9 @@ const styles = StyleSheet.create({
     }
 });
 
-export const AddPopUp : React.FC<IProps> = ({ getStock }) => {
+const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => {
     const opacity = useRef<Animated.Value>(new Animated.Value(0)).current;
     const target = useRef<Animated.Value>(new Animated.Value(-1500)).current;
-    const targetRef = useRef<number>(0);
 
     const [done, setDone] = useState<boolean>(false);
 
@@ -49,6 +69,7 @@ export const AddPopUp : React.FC<IProps> = ({ getStock }) => {
 
     const reset = () => {
         if(done) {
+            console.log(`RESET:`)
             Animated.timing(target, {
                 toValue: 0,
                 duration: 0,
@@ -74,25 +95,33 @@ export const AddPopUp : React.FC<IProps> = ({ getStock }) => {
     }
 
     const animateOut = async () => {
+        console.log(`ANIMATE OUT:`)
         Animated.timing(opacity, {
             toValue: 0,
-            duration: ANIMATION_TIME,
+            duration: ANIMATION_TIME/2,
             useNativeDriver: true
         }).start();
 
         Animated.timing(target, {
             toValue: -1500,
-            duration: ANIMATION_TIME,
+            duration: ANIMATION_TIME/2,
             useNativeDriver: false
         }).start();
 
-        setTimeout(() => setDone(false), ANIMATION_TIME);
+        await setTimeout(() => setDone(false), ANIMATION_TIME/2);
     }
 
-    const setTargetRef = (height: number) => {
-        targetRef.current = Dimensions.get('screen').height - height;
+    const renderContent : React.FC<IProps> = (props: IProps) => {
+        switch(props.type) {
+            case EPopUpType.Delete: {
+                return <DeleteForm clearSelectedItem={props.clearSelectedItem} item={props.selectedItem} triggerClose={animateOut} getStock={props.getStock} />
+            }
+            default: {
+                return <AddForm triggerClose={animateOut} getStock={props.getStock} />
+            }
+        }
     }
-
+    
     useEffect(() => {
         const keyboardOpenListener = Keyboard.addListener('keyboardDidShow', (e) => {
             avoidKeyboard(e.endCoordinates.height);
@@ -118,13 +147,19 @@ export const AddPopUp : React.FC<IProps> = ({ getStock }) => {
         }
     }, [done]);
 
+    useImperativeHandle(ref, () => ({
+        trigger: () => animateIn()
+    }));
+
     return (
         <>
             <Animated.View style={[styles.container, { opacity: opacity }]} pointerEvents={done ? 'auto' : 'none'} />
-            <Animated.View style={[styles.card, { bottom: target }]} onLayout={(e: LayoutChangeEvent) => setTargetRef(e.nativeEvent.layout.height)}>
-                <AddForm triggerClose={animateOut} getStock={getStock} />
+            <Animated.View style={[styles.card, { bottom: target }]}>
+                {renderContent(props)}
             </Animated.View>
             <AddButton onPress={animateIn} />
         </>
     );
 }
+
+export default forwardRef(PopUp);

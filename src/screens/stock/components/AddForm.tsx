@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Image, Keyboard, NativeSyntheticEvent, Pressable, StyleSheet, TextInput, TextInputEndEditingEventData, View } from 'react-native';
 import { CustomText, Pip, EPipColor, IconButton, EButtonIcon, CustomButton } from '../../../components';
+import { IPopUpProps } from '../../../components/PopUp';
 import { Color } from '../../../constants';
 import { useFileSystem } from '../../../hooks/useFileSystem';
 import { IStockItem } from '../../../models';
@@ -14,11 +15,6 @@ interface IErrors {
 interface IState {
     name: string;
     greenValue: number;
-}
-
-interface IProps {
-    triggerClose: Function;
-    getStock: Function;
 }
 
 const styles = StyleSheet.create({
@@ -38,7 +34,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
+export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
     const { storeStockItem } = useFileSystem();
 
     const [state, setState] = useState<IState>({ name: '', greenValue: 1 });
@@ -120,10 +116,18 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
         storeStockItem(item)
         .then(async () => {
             setErrors({ name:'', greenValue:'' });
-            triggerClose();
             await getStock();
+            await triggerClose();
         })
         .catch((e) => console.log(`ERROR:`, e));
+    }
+
+    const isButtonDisabled = () => {
+        if(!!errors.name || !!errors.greenValue || state.name === '' || state.greenValue < 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     return (
@@ -138,6 +142,7 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
             }}>
                 <Pressable onPress={() => {
                     triggerClose();
+                    setState({ name: '', greenValue: 1 });
                     setErrors({ name:'', greenValue:'' });
                 }}>
                     <Image
@@ -149,7 +154,8 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
                     />
                 </Pressable>
             </View>
-             <View style={{ paddingVertical: 8 }}>
+            
+            <View style={{ paddingVertical: 8 }}>
                 <CustomText 
                     value='Add a new item'
                     textStyle={[text.primary, { fontSize: 16 }]}
@@ -199,11 +205,21 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
                     <View
                         style={styles.countContainer}
                     >
-                        <IconButton 
-                            icon={EButtonIcon.Minus}
-                            onPress={() => decrementValue('greenValue')}
-                            size={30}
-                        />
+                        {
+                            state.greenValue > 1 ?
+                                <IconButton 
+                                    icon={EButtonIcon.Minus}
+                                    onPress={() => decrementValue('greenValue')}
+                                    size={30}
+                                />
+                            :
+                                <View 
+                                    style={{
+                                        width: 30,
+                                        height: 30
+                                    }}
+                                />
+                        }
                         <CustomText 
                             textStyle={{
                                 marginHorizontal: 24,
@@ -242,6 +258,7 @@ export const AddForm : React.FC<IProps> = ({ triggerClose, getStock }) => {
                     buttonStyle={buttons.primary}
                     labelStyle={[text.primary, { color: Color.White, fontSize: 16, fontWeight: '700' }]}
                     onPress={addItem}
+                    disabled={isButtonDisabled()}
                 />
             </View>
         </View>

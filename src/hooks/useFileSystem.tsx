@@ -27,7 +27,7 @@ export const useFileSystem = () => {
     const deleteFileIfExists = async (key: string) => {
         const item = await getFileInfo(key);
         if(item.exists) {
-            await FS.deleteAsync(buildFileUri(key));
+            await FS.deleteAsync(item.uri);
         } else throw new FileSystemError('File does not exist!');
     }
 
@@ -48,10 +48,16 @@ export const useFileSystem = () => {
         }
     }
 
-    const syncIds = async (id: string) => {
+    const syncIds = async (id: string, del: boolean = false) => {
         let ids: Array<string> = await getStockIds();
-        if(!ids.includes(id)) {
-            ids.push(id);
+
+        if(!del) {
+            if(!ids.includes(id) && !del) {
+                ids.push(id);
+                storeStockIds(ids);
+            }
+        } else {
+            ids = ids.filter(i => i != id);
             storeStockIds(ids);
         }
     }
@@ -77,7 +83,7 @@ export const useFileSystem = () => {
 
     const deleteStockItem = async (data: IStockItem) => {
         await deleteFileIfExists(data.name);
-        await syncIds(data.name);
+        await syncIds(data.name, true);
     }
 
     return {

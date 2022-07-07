@@ -7,6 +7,7 @@ interface IProps {
     index: number;
     item: IStockItem;
     updateItemValue: Function;
+    selectItemForDeletion?: Function;
 }
 
 const styles = StyleSheet.create({
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index }) => {
+export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index, selectItemForDeletion }) => {
     const getPipColor = () => {
         if(item.value === 0) {
             return EPipColor.Red;
@@ -59,8 +60,15 @@ export const StockItem : React.FC<IProps> = ({ item, updateItemValue, index }) =
             <View style={styles.buttonContainer}>
                 <View style={styles.iconButton}>
                     <IconButton 
-                        icon={EButtonIcon.Minus}
-                        onPress={() => updateItemValue(item.name, (item.value - 1))}
+                        icon={item.value > 0 ? EButtonIcon.Minus : EButtonIcon.Delete}
+                        onPress={
+                            item.value > 0 ?
+                                () => updateItemValue(item.name, (item.value - 1))
+                            :
+                                () => {
+                                    !!selectItemForDeletion && selectItemForDeletion(item)
+                                }
+                        }
                     />
                 </View>
                 <CustomText 

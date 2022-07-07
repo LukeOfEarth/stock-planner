@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import * as React from 'react';
 import { GestureResponderEvent, StyleProp, TextStyle, ViewStyle, TouchableOpacity } from 'react-native';
+import { Color } from '../constants';
 import { IGradientProps } from '../models';
 import { buttons } from '../styles';
 import { CustomText } from './CustomText';
@@ -10,14 +11,16 @@ interface IProps {
     buttonStyle?: StyleProp<ViewStyle>;
     labelStyle?: StyleProp<TextStyle>;
     onPress?: (event: GestureResponderEvent) => void
-    gradientProps?: IGradientProps
+    gradientProps?: IGradientProps,
+    disabled?: boolean
 }
 
-export const CustomButton : React.FC<IProps> = ({ label, buttonStyle, labelStyle, onPress, gradientProps }) => {
+export const CustomButton : React.FC<IProps> = ({ label, buttonStyle, labelStyle, onPress, gradientProps, disabled = false }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[buttons.root, buttonStyle]}
+            style={[buttons.root, buttonStyle, (disabled && { backgroundColor: Color.DisabledGreyBG })]}
+            disabled={disabled}
         >
             {
                 !!gradientProps &&
@@ -35,7 +38,7 @@ export const CustomButton : React.FC<IProps> = ({ label, buttonStyle, labelStyle
                 ||
                 !!label &&
                 <CustomText 
-                    textStyle={labelStyle}
+                    textStyle={[labelStyle, (disabled && {color: Color.DisabledGreyText})]}
                     value={label ?? ''}
                 />
             }

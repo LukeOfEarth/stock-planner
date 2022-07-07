@@ -13,6 +13,7 @@ interface IProps {
     list: Array<IStockItem>;
     updateItemValue: Function;
     filter: string;
+    selectItemForDeletion: Function;
 }
 
 interface ITabRoute {
@@ -30,6 +31,7 @@ interface ISecondRouteProps {
     list: Array<IStockItem>;
     updateItemValue: Function;
     filter: string;
+    selectItemForDeletion: Function;
 }
 
 const FirstRoute : React.FC<IFirstRouteProps> = ({ stock, updateItemValue, filter }) => {
@@ -61,7 +63,7 @@ const FirstRoute : React.FC<IFirstRouteProps> = ({ stock, updateItemValue, filte
     );
 }
   
-const SecondRoute : React.FC<ISecondRouteProps> = ({ list, updateItemValue, filter }) => {
+const SecondRoute : React.FC<ISecondRouteProps> = ({ list, updateItemValue, filter, selectItemForDeletion }) => {
     const insets = useSafeAreaInsets();
     
     return (
@@ -73,7 +75,7 @@ const SecondRoute : React.FC<ISecondRouteProps> = ({ list, updateItemValue, filt
         >
             {
                 !!list.length ?
-                    list?.map((el, index) => <StockItem index={index} item={el} updateItemValue={updateItemValue} key={index}/>)
+                    list?.map((el, index) => <StockItem selectItemForDeletion={selectItemForDeletion} index={index} item={el} updateItemValue={updateItemValue} key={index}/>)
                 :
                 <View
                     style={{
@@ -92,7 +94,7 @@ const SecondRoute : React.FC<ISecondRouteProps> = ({ list, updateItemValue, filt
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-export const ContentTabs : React.FC<IProps> = ({ stock, list, updateItemValue, filter }) => {
+export const ContentTabs : React.FC<IProps> = ({ stock, list, updateItemValue, filter, selectItemForDeletion }) => {
     const [index, setIndex] = useState<number>(0);
     const [routes] = useState<Array<ITabRoute>>([
       { key: 'first', title: 'Stock' },
@@ -101,7 +103,7 @@ export const ContentTabs : React.FC<IProps> = ({ stock, list, updateItemValue, f
 
     const renderScene = SceneMap({
       first: () => <FirstRoute filter={filter} stock={stock} updateItemValue={updateItemValue} />,
-      second: () => <SecondRoute filter={filter} list={list} updateItemValue={updateItemValue} />,
+      second: () => <SecondRoute filter={filter} list={list} updateItemValue={updateItemValue} selectItemForDeletion={selectItemForDeletion} />,
     });
   
     return (

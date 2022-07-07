@@ -4,7 +4,8 @@ import { Color } from '../constants';
 
 export enum EButtonIcon {
     Plus,
-    Minus
+    Minus,
+    Delete
 }
 
 interface IProps {
@@ -24,7 +25,15 @@ export const IconButton : React.FC<IProps> = ({ icon, onPress, size }) => {
             }]}
         >
             <Image 
-                source={icon === EButtonIcon.Minus ? require('../../assets/minus.png') : require('../../assets/plus.png')}
+                source={icon === EButtonIcon.Minus ? 
+                        require('../../assets/minus.png') 
+                    : 
+                    icon === EButtonIcon.Plus ? 
+                        require('../../assets/plus.png')
+                    :
+                        require('../../assets/delete.png')
+
+                }
                 style={{
                     width: '100%',
                     height: '100%'

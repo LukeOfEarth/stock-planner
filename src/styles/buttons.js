@@ -14,5 +14,9 @@ export const buttons = StyleSheet.create({
     primary: {
         backgroundColor: Color.PGreen,
         borderRadius: 20,
-    }
+    },
+    delete: {
+        backgroundColor: Color.PRed,
+        borderRadius: 20,
+    },
 });

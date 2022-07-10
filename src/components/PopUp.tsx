@@ -56,6 +56,7 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
     const target = useRef<Animated.Value>(new Animated.Value(-1500)).current;
 
     const [done, setDone] = useState<boolean>(false);
+    const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 
     const avoidKeyboard = (height : number) => {
         if(done) {
@@ -69,7 +70,6 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
 
     const reset = () => {
         if(done) {
-            console.log(`RESET:`)
             Animated.timing(target, {
                 toValue: 0,
                 duration: 0,
@@ -95,7 +95,10 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
     }
 
     const animateOut = async () => {
-        console.log(`ANIMATE OUT:`)
+        if(isFirstRender) {
+            setIsFirstRender(false);
+        }
+
         Animated.timing(opacity, {
             toValue: 0,
             duration: ANIMATION_TIME/2,
@@ -131,7 +134,9 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
         
         if(done) {
             keyboardCloseListener = Keyboard.addListener('keyboardDidHide', () => {
-                reset();
+                if(!isFirstRender) {
+                    reset();
+                }
             });
         }
 
@@ -141,7 +146,7 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
 
         return () => {
             keyboardOpenListener.remove();
-            if(done) {
+            if(keyboardCloseListener !== undefined) {
                 keyboardCloseListener.remove();
             }
         }

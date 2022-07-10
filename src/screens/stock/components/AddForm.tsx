@@ -15,6 +15,7 @@ interface IErrors {
 interface IState {
     name: string;
     greenValue: number;
+    submitted: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -37,8 +38,13 @@ const styles = StyleSheet.create({
 export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
     const { storeStockItem } = useFileSystem();
 
-    const [state, setState] = useState<IState>({ name: '', greenValue: 1 });
+    const [state, setState] = useState<IState>({ name: '', greenValue: 1, submitted: false });
     const [errors, setErrors] = useState<IErrors>({ name: '', greenValue: '' });
+
+    const resetState = () => {
+        setState({ name: '', greenValue: 1, submitted: false });
+        setErrors({ name: '', greenValue: '' });
+    }
 
     const decrementValue = (key: string) => {
         if(key != 'greenValue') {
@@ -103,6 +109,8 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
     }
 
     const addItem = async () => {
+        setState({ ...state, submitted: true });
+
         if(validate()) {
             return;
         }
@@ -115,9 +123,9 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
 
         storeStockItem(item)
         .then(async () => {
-            setErrors({ name:'', greenValue:'' });
             await getStock();
             await triggerClose();
+            resetState();
         })
         .catch((e) => console.log(`ERROR:`, e));
     }
@@ -142,7 +150,7 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
             }}>
                 <Pressable onPress={() => {
                     triggerClose();
-                    setState({ name: '', greenValue: 1 });
+                    setState({ name: '', greenValue: 1, submitted: false });
                     setErrors({ name:'', greenValue:'' });
                 }}>
                     <Image
@@ -183,7 +191,7 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
             </View>
 
             {
-                !!errors.name &&
+                (state.submitted && !!errors.name) &&
                 <CustomText 
                     value={errors.name}
                     textStyle={[text.secondary, { color: Color.PRed, marginTop: 2 }]}
@@ -237,7 +245,7 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
                 </View>
 
                 {
-                    !!errors.greenValue &&
+                    (state.submitted && !!errors.greenValue) &&
                     <CustomText 
                         value={errors.greenValue}
                         textStyle={[text.secondary, { color: Color.PRed, marginTop: 2 }]}

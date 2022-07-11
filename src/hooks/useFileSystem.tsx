@@ -60,11 +60,11 @@ export const useFileSystem = () => {
         if(!del) {
             if(!ids.includes(id) && !del) {
                 ids.push(id);
-                storeStockIds(ids);
+                await storeStockIds(ids);
             }
         } else {
             ids = ids.filter(i => i != id);
-            storeStockIds(ids);
+            await storeStockIds(ids);
         }
     }
 

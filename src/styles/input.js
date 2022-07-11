@@ -11,7 +11,7 @@ export const search = StyleSheet.create({
     container: {
         width: '100%',
         height: 40,
-        borderRadius: 8,
+        borderRadius: 20,
         overflow: 'hidden',
         borderWidth: 1
     }

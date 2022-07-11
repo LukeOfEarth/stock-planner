@@ -31,7 +31,7 @@ export const IconButton : React.FC<IProps> = ({ icon, onPress, size }) => {
                     icon === EButtonIcon.Plus ? 
                         require('../../assets/plus.png')
                     :
-                        require('../../assets/delete.png')
+                        require('../../assets/delete3.png')
 
                 }
                 style={{

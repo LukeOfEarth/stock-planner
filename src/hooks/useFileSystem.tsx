@@ -7,8 +7,14 @@ const ID_KEY: string = 'ids';
 export const useFileSystem = () => {
     const buildFileUri = (key: string) => `${FS.documentDirectory}${key}`;
 
+    const processKeyWithSpaces = (key: string) => {
+        let result = key.trim();
+        result = result.replace(' ', '_');
+        return result;
+    }
+
     const getFileInfo = async (key: string) => {
-        const file = await FS.getInfoAsync(buildFileUri(key));
+        const file = await FS.getInfoAsync(buildFileUri(processKeyWithSpaces(key)));
         return file;
     }
 
@@ -21,7 +27,7 @@ export const useFileSystem = () => {
     }
 
     const storeStringAsTextFile = async (key: string, data: string) => {
-        await FS.writeAsStringAsync(buildFileUri(key), data);
+        await FS.writeAsStringAsync(buildFileUri(processKeyWithSpaces(key)), data);
     }
 
     const deleteFileIfExists = async (key: string) => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { StockScreen } from "../screens/stock/StockScreen";
-import { AddScreen } from '../screens/add/AddScreen';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { NavigationContainer, ParamListBase, RouteProp } from '@react-navigation/native';
 
@@ -27,7 +26,6 @@ export function StackNavigator() {
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Stock'>
                 <Stack.Screen name="Stock" component={StockScreen} />
-                <Stack.Screen name="Add" component={AddScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

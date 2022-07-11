@@ -31,6 +31,7 @@ export const DeleteForm : React.FC<IPopUpProps> = ({ getStock, triggerClose, ite
                 alignItems: 'flex-end'
             }}>
                 <Pressable onPress={() => {
+                    !!clearSelectedItem && clearSelectedItem();
                     triggerClose();
                 }}>
                     <Image
@@ -53,7 +54,7 @@ export const DeleteForm : React.FC<IPopUpProps> = ({ getStock, triggerClose, ite
             <View style={{ paddingVertical: 8 }}>
                 <CustomText 
                     value={!!item?.name ? item.name : 'Oops...No item found!'}
-                    textStyle={[text.primary, { fontSize: 24, fontWeight: 'bold' }]}
+                    textStyle={[text.primary, { fontSize: 24, fontFamily: 'Inter-Bold' }]}
                 />
             </View>
 
@@ -69,7 +70,7 @@ export const DeleteForm : React.FC<IPopUpProps> = ({ getStock, triggerClose, ite
                 <CustomButton 
                     label={'Delete'}
                     buttonStyle={buttons.delete}
-                    labelStyle={[text.primary, { color: Color.White, fontSize: 16, fontWeight: '700' }]}
+                    labelStyle={[text.button, { color: Color.White }]}
                     onPress={deleteItem}
                 />
             </View>

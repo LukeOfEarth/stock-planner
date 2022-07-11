@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
+export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock, selectTabIndex }) => {
     const { storeStockItem } = useFileSystem();
 
     const [state, setState] = useState<IState>({ name: '', greenValue: 1, submitted: false });
@@ -126,6 +126,7 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock }) => {
             await getStock();
             await triggerClose();
             resetState();
+            !!selectTabIndex && selectTabIndex(1);
         })
         .catch((e) => console.log(`ERROR:`, e));
     }

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { screens, text } from '../../styles';
 import { useFocusEffect } from '@react-navigation/native';
 import { IStockItem } from '../../models';
@@ -8,11 +8,12 @@ import { StockSearch } from './components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IStackScreenProps } from '../../navigation/Stack';
 import PopUp, { EPopUpType } from '../../components/PopUp';
-import { ContentTabs } from './components/ListTabs';
+import ContentTabs from './components/ContentTabs';
 import { StatusBar } from 'expo-status-bar';
 import { CustomText } from '../../components';
 
 type PopUpHandle = React.ElementRef<typeof PopUp>;
+type TabHandle = React.ElementRef<typeof ContentTabs>;
 
 export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route }) => {
     const insets = useSafeAreaInsets();
@@ -25,6 +26,7 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
     const stockDiff = useRef<Array<IStockItem>>([]);
     const updateItemTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const popUpRef = useRef<PopUpHandle>(null);
+    const tabRef = useRef<TabHandle>(null);
 
     const stockedItems = stock.filter(s => s.value >= s.greenValue);
     const listedItems = stock.filter(s => s.value < s.greenValue);
@@ -72,6 +74,8 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
 
     const triggerPopUp = () => setTimeout(() => popUpRef.current?.trigger(), 100);
 
+    const selectTabIndex = (index: number) => tabRef.current?.selectTabIndex(index);
+
     const selectItemForDeletion = (item: IStockItem) => {
         setSelectedItem(item);
         triggerPopUp();
@@ -108,11 +112,12 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
             {
                 !!stock.length ?
                     <ContentTabs  
-                    filter={filter} 
-                    stock={filteredStock} 
-                    list={filteredList} 
-                    updateItemValue={updateItemValue}
-                    selectItemForDeletion={selectItemForDeletion}
+                        filter={filter} 
+                        stock={filteredStock} 
+                        list={filteredList} 
+                        updateItemValue={updateItemValue}
+                        selectItemForDeletion={selectItemForDeletion}
+                        ref={tabRef}
                     />
                 :
                     <View
@@ -126,7 +131,7 @@ export const StockScreen : React.FC<IStackScreenProps> = ({ navigation, route })
                         />
                     </View>
             }
-            <PopUp ref={popUpRef} clearSelectedItem={clearSelectedItem} selectedItem={selectedItem} getStock={getStock} type={getPopUpType()} />
+            <PopUp ref={popUpRef} selectTabIndex={selectTabIndex} clearSelectedItem={clearSelectedItem} selectedItem={selectedItem} getStock={getStock} type={getPopUpType()} />
         </View>
     );
 }

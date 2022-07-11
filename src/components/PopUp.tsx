@@ -16,13 +16,15 @@ interface IProps {
     type: EPopUpType;
     selectedItem?: IStockItem;
     clearSelectedItem: Function;
+    selectTabIndex: Function;
 }
 
 export interface IPopUpProps {
     triggerClose: Function;
     getStock: Function;
     item?: IStockItem;
-    clearSelectedItem?: Function
+    clearSelectedItem?: Function;
+    selectTabIndex?: Function;
 }
 
 type IHandle = {
@@ -120,7 +122,7 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
                 return <DeleteForm clearSelectedItem={props.clearSelectedItem} item={props.selectedItem} triggerClose={animateOut} getStock={props.getStock} />
             }
             default: {
-                return <AddForm triggerClose={animateOut} getStock={props.getStock} />
+                return <AddForm selectTabIndex={props.selectTabIndex} triggerClose={animateOut} getStock={props.getStock} />
             }
         }
     }

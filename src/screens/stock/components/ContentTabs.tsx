@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { View, Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { CustomText } from '../../../components';
@@ -7,6 +7,10 @@ import { IStockItem } from '../../../models';
 import { text } from '../../../styles';
 import { StockItem } from './StockItem';
 import { Tabs } from './Tabs';
+
+type IHandle = {
+    selectTabIndex: (index: number) => void
+}
 
 interface IProps {
     stock: Array<IStockItem>;
@@ -94,7 +98,7 @@ const SecondRoute : React.FC<ISecondRouteProps> = ({ list, updateItemValue, filt
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-export const ContentTabs : React.FC<IProps> = ({ stock, list, updateItemValue, filter, selectItemForDeletion }) => {
+const ContentTabs : React.ForwardRefRenderFunction<IHandle, IProps> = ({ stock, list, updateItemValue, filter, selectItemForDeletion }, ref) => {
     const [index, setIndex] = useState<number>(0);
     const [routes] = useState<Array<ITabRoute>>([
       { key: 'first', title: 'Stock' },
@@ -105,7 +109,11 @@ export const ContentTabs : React.FC<IProps> = ({ stock, list, updateItemValue, f
       first: () => <FirstRoute filter={filter} stock={stock} updateItemValue={updateItemValue} />,
       second: () => <SecondRoute filter={filter} list={list} updateItemValue={updateItemValue} selectItemForDeletion={selectItemForDeletion} />,
     });
-  
+
+    useImperativeHandle(ref, () => ({
+        selectTabIndex: (index: number) => setIndex(index)
+    }));
+    
     return (
         <View style={{backgroundColor: 'white', height: '100%'}}>
             <TabView
@@ -119,3 +127,5 @@ export const ContentTabs : React.FC<IProps> = ({ stock, list, updateItemValue, f
         </View>
     );
   }
+
+export default forwardRef(ContentTabs);

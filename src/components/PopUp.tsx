@@ -58,7 +58,7 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
     const target = useRef<Animated.Value>(new Animated.Value(-1500)).current;
 
     const [done, setDone] = useState<boolean>(false);
-    const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
+    const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
 
     const avoidKeyboard = (height : number) => {
         if(done) {
@@ -71,6 +71,11 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
     }
 
     const reset = () => {
+        if(isFirstRender) {
+            setIsFirstRender(false);
+            return;
+        }
+
         if(done) {
             Animated.timing(target, {
                 toValue: 0,
@@ -97,10 +102,6 @@ const PopUp : React.ForwardRefRenderFunction<IHandle, IProps> = (props, ref) => 
     }
 
     const animateOut = async () => {
-        if(isFirstRender) {
-            setIsFirstRender(false);
-        }
-
         Animated.timing(opacity, {
             toValue: 0,
             duration: ANIMATION_TIME/2,

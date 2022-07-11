@@ -21,7 +21,7 @@ export const text = StyleSheet.create({
         textAlign: TextAlign.Center,
         height: 40,
         lineHeight: 40,
-        fontFamily: 'Inter-Bold',
+        fontFamily: 'Rubik-Bold',
         fontSize: 18
     },
     cardDetail: {
@@ -29,6 +29,6 @@ export const text = StyleSheet.create({
         textAlign: TextAlign.Left,
         display: Display.Flex,
         width: '100%',
-        fontFamily: 'Inter-Regular'
+        fontFamily: 'Rubik-Regular'
     }
 });

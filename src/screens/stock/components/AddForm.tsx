@@ -265,7 +265,7 @@ export const AddForm : React.FC<IPopUpProps> = ({ triggerClose, getStock, select
                 <CustomButton 
                     label={'Add'}
                     buttonStyle={buttons.primary}
-                    labelStyle={[text.primary, { color: Color.White, fontSize: 16, fontWeight: '700' }]}
+                    labelStyle={[text.button, { color: Color.White }]}
                     onPress={addItem}
                     disabled={isButtonDisabled()}
                 />

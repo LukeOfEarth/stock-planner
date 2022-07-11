@@ -17,6 +17,21 @@ export default function App() {
       'Inter-Regular': require('./assets/fonts/inter/Inter-Regular.ttf'),
       'Inter-SemiBold': require('./assets/fonts/inter/Inter-SemiBold.ttf'),
       'Inter-Thin': require('./assets/fonts/inter/Inter-Thin.ttf'),
+
+      'Rubik-Black': require('./assets/fonts/rubik/Rubik-Black.ttf'),
+      'Rubik-BlackItalic': require('./assets/fonts/rubik/Rubik-BlackItalic.ttf'),
+      'Rubik-Bold': require('./assets/fonts/rubik/Rubik-Bold.ttf'),
+      'Rubik-BoldItalic': require('./assets/fonts/rubik/Rubik-BoldItalic.ttf'),
+      'Rubik-Italic': require('./assets/fonts/rubik/Rubik-Italic.ttf'),
+      'Rubik-ExtraBold': require('./assets/fonts/rubik/Rubik-ExtraBold.ttf'),
+      'Rubik-ExtraBoldItalic': require('./assets/fonts/rubik/Rubik-ExtraBoldItalic.ttf'),
+      'Rubik-Light': require('./assets/fonts/rubik/Rubik-Light.ttf'),
+      'Rubik-LightItalic': require('./assets/fonts/rubik/Rubik-LightItalic.ttf'),
+      'Rubik-Medium': require('./assets/fonts/rubik/Rubik-Medium.ttf'),
+      'Rubik-MediumItalic': require('./assets/fonts/rubik/Rubik-MediumItalic.ttf'),
+      'Rubik-Regular': require('./assets/fonts/rubik/Rubik-Regular.ttf'),
+      'Rubik-SemiBold': require('./assets/fonts/rubik/Rubik-SemiBold.ttf'),
+      'Rubik-SemiBoldItalic': require('./assets/fonts/rubik/Rubik-SemiBoldItalic.ttf'),
     });
 
     setLoaded(true);

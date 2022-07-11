@@ -9,9 +9,9 @@ export const Color = {
     TransparentGrey: 'rgba(236, 236, 236, 0,5)',
     Transparent: 'rgba(0, 0, 0, 0)',
 
-    PGreen: '#E2F0CB',
-    POrange: '#FFDAC1',
-    PRed: '#FFB7B2',
+    PGreen: '#2db67c',
+    POrange: '#ebb32e',
+    PRed: '#df1f5a',
 
     DisabledGreyBG: '#e5e5e5',
     DisabledGreyText: '#b4b4b4',

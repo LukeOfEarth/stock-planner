@@ -1,5 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Dimensions, ScrollView } from 'react-native';
+import { View, Dimensions, ScrollView, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { CustomText } from '../../../components';
@@ -50,7 +50,11 @@ const FirstRoute : React.FC<IFirstRouteProps> = ({ stock, updateItemValue, filte
         >
             {
                 !!stock.length ?
-                    stock.map((el, index) => <StockItem index={index} item={el} updateItemValue={updateItemValue} key={index}/>)
+                    <FlatList
+                        data={stock}
+                        renderItem={({item, index}) => <StockItem index={index} item={item} updateItemValue={updateItemValue} />}
+                        keyExtractor={item => item.name}
+                    />
                 :
                 <View
                     style={{
@@ -79,7 +83,11 @@ const SecondRoute : React.FC<ISecondRouteProps> = ({ list, updateItemValue, filt
         >
             {
                 !!list.length ?
-                    list?.map((el, index) => <StockItem selectItemForDeletion={selectItemForDeletion} index={index} item={el} updateItemValue={updateItemValue} key={index}/>)
+                    <FlatList
+                        data={list}
+                        renderItem={({item, index}) => <StockItem selectItemForDeletion={selectItemForDeletion} index={index} item={item} updateItemValue={updateItemValue} />}
+                        keyExtractor={item => item.name}
+                    />
                 :
                 <View
                     style={{
